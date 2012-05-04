@@ -1,9 +1,9 @@
-analogi
+AnaLogi
 =======
 
-Graphical Web Interface for OSSECAnaLogi v1.0
+Graphical Web Interface for OSSEC
+AnaLogi v1.0
 Copyright (C) 2012 ECSC Ltd.
-
 
 = Information about AnaLogi =
  
