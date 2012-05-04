@@ -1,0 +1,144 @@
+.fleft{float:left;border-style:none;border-width:1px;}
+.fright{float:right;}
+.ffull{float:left;}
+.clr{clear:both;}
+div{border-style:solid;margin:0px; border-style:solid;border-width:0px;}
+.r1,.r2,.r3{height:1px;font-size:1px;}
+.r1{margin:0 5px;}
+.r2{margin:0 3px;}
+.r3{margin:0 2px;}
+.r4{margin:0 1px;height:2px;font-size:1px;}
+.content{padding:8px 9px 5px;background:#406ed7;}
+
+.maincol{width:33%}
+
+.top10header{text-transform: font-weight: bold;border-left: 6px solid #005482; color: #363636; font-size: 20px;  padding: 7px 0 7px 10px;font-family: Helvetica,Arial,sans-serif;}
+
+.top10data{text-transform: capitalize; font-weight: bold; color: #363636; font-size: 12px;  font-family: Helvetica,Arial,sans-serif;padding-left:1px;}
+
+.tiny{ font-weight: bold; color: #363636; font-size: 10px;  font-family: Helvetica,Arial,sans-serif;}
+
+
+a.top10data:link {color: #363636;}
+a.top10data:visited {color: #363636;}
+a.top10data:hover {color: #363636;}
+a.top10data:active {color: #363636;}
+
+a.tinyblack:link {color: #EE0000;}
+a.tinyblack:visited {color: #EE0000;}
+a.tinyblack:hover {color: #EE0000;}
+a.tinyblack:active {color: #EE0000;}
+
+.top10s{width:100%; margin: 0px auto;}
+
+body{
+	margin: 0px auto;
+	width: 90%;
+}
+
+
+table {
+	max-width:100%;
+}
+th {
+	text-align: left;
+	padding:0px;
+	border:0px;
+	margin:0px;
+}
+th a {
+	font-family: Helvetica,Arial,sans-serif;
+	text-align: left;
+	color: #363636;
+	text-decoration:none;
+	font-size: 14px;
+	padding:0px;
+	margin:0px;	
+}
+tr:nth-child(even)		{ background-color:#f5f5f5; }
+tr:nth-child(odd)		{ background-color:#ffffff; }
+tr.row:hover 			{ background-color:#cccccc; }
+
+td {
+	font-size: 10px;
+	max-width: 600px;
+	overflow:hidden;
+	vertical-align:top;
+}
+
+
+.filters {
+	font-family: Helvetica,Arial,sans-serif;
+	text-align: left;
+	color: #363636;
+	padding-right: 15px;
+}
+
+
+.tooltip
+{
+position: relative;
+background: #ffffff;
+cursor: help;
+display: inline-block;
+text-decoration: none;
+color: #222;
+outline: none;
+}
+
+.tooltip span
+{
+visibility: hidden;
+position: absolute;
+bottom: 30px;
+left: 20%;
+z-index: 999;
+width: 230px;
+margin-left: -127px;
+padding: 10px;
+border: 2px solid #ccc;
+opacity: .9;
+background-color: #ddd;
+background-image: -webkit-linear-gradient(rgba(255,255,255,.5), rgba(255,255,255,0));
+background-image: -moz-linear-gradient(rgba(255,255,255,.5), rgba(255,255,255,0));
+background-image: -ms-linear-gradient(rgba(255,255,255,.5), rgba(255,255,255,0));
+background-image: -o-linear-gradient(rgba(255,255,255,.5), rgba(255,255,255,0));
+background-image: linear-gradient(rgba(255,255,255,.5), rgba(255,255,255,0));
+-moz-border-radius: 4px;
+border-radius: 4px;
+-moz-box-shadow: 0 1px 2px rgba(0,0,0,.4), 0 1px 0 rgba(255,255,255,.5) inset;
+-webkit-box-shadow: 0 1px 2px rgba(0,0,0,.4), 0 1px 0 rgba(255,255,255,.5) inset;
+box-shadow: 0 1px 2px rgba(0,0,0,.4), 0 1px 0 rgba(255,255,255,.5) inset;
+text-shadow: 0 1px 0 rgba(255,255,255,.4);
+}
+
+.tooltip:hover
+{
+border: 0; /* IE6 fix */
+}
+
+.tooltip:hover span
+{
+visibility: visible;
+}
+
+.tooltip span:before,
+.tooltip span:after
+{
+content: "";
+position: absolute;
+z-index: 1000;
+bottom: -7px;
+left: 50%;
+margin-left: -8px;
+border-top: 8px solid #ddd;
+border-left: 8px solid transparent;
+border-right: 8px solid transparent;
+border-bottom: 0;
+}
+
+.tooltip span:before
+{
+border-top-color: #ccc;
+bottom: -8px;
+}

@@ -1,0 +1,19 @@
+AnaLogi v1.0
+Copyright (C) 2012 ECSC Ltd.
+
+= Ossec = 
+
+Install ossec-hids-server (AnaLogi v1.0 built around OSSEC 2.6)
+
+Follow instructions to log to MySQL database
+(currently http://www.ossec.net/doc/manual/output/mysql-database-output.html).
+
+= AnaLogi =
+
+Create a vhost in your webserver (nothing specific required) and place these files in the folder.
+- Of course, following best practise and hardening guides for both the vhost and php.ini
+
+Amend the included db_ossec.php to connect to your SQL database (likely little to change required
+here)
+
+Have a play with config.php
