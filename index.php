@@ -54,6 +54,8 @@ if(isset($_GET['field']) && $_GET['field']=='path'){
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
+<title>AnaLogi - OSSEC WUI</title>
+
 <meta http-equiv="refresh" content="<?php echo $glb_autorefresh; ?>" > 
 <link href="/style.css" rel="stylesheet" type="text/css" />
 <script src="/amcharts/amcharts.js" type="text/javascript"></script>
@@ -176,12 +178,6 @@ if(isset($_GET['field']) && $_GET['field']=='path'){
 
 <div id="chartdiv" style="width:100%; height:500px;"></div>
 	
-<?php
-if($glb_notrepresented==1){
-	echo "<div class='tiny' style='padding-left:80px;'>Client reported as missing: ".$notrepresentedstring."</div>";
-}
-?>
-
 <div class='top10header'>Filters</div>
 
 <div>

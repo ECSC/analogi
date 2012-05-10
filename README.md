@@ -7,10 +7,9 @@ Copyright (C) 2012 ECSC Ltd.
 
 = Information about AnaLogi =
  
-'Analytical Log Interface' built to sit on top of OSSEC (built on OSSEC 2.6)
+'Analytical Log Interface' was built to sit on top of OSSEC (built on OSSEC 2.6) and requires 0 modifications to OSSEC or the database schema that ships with OSSEC.  AnaLogi requires a Webserver sporting PHP and MySQL.
 
 Written for inhouse analysis work, released under GPL to give something back.
-
 
 = Notes =
 
