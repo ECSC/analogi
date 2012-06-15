@@ -88,18 +88,17 @@ $arraylocationsunique=array();
 echo "var chartData = [
 	";
 
-$first=0;
+$anydata=0;
 
 while($rowchart = @mysql_fetch_assoc($resultchart)){
-
 	# XXX Compile a list of all hosts, maybe a better way to do this than have an array the size of the alert table
 	$locationname=preg_replace($glb_hostnamereplace,"",$rowchart['res_value']);
 	array_push($arraylocations, $locationname);
 
 
 	# for the first run, this needs setting
-	if($first==0){
-		$first=1;
+	if($anydata==0){
+		$anydata=1;
 		$tmpdate=$rowchart['res_time'];
 	}
 
@@ -132,7 +131,8 @@ while($rowchart = @mysql_fetch_assoc($resultchart)){
 }
 
 
-if(strlen($mainstring)>0){
+#if(strlen($mainstring)>0){
+if($anydata==1){
 	# only run this last bit if we have any info at all.. if not let the graph be empty
 	# We have to run this cycle one more time to process the last row
 	$mainstring.= "	{date: new Date(".date("Y", $tmpdate).", ".(date("m", $tmpdate)-1).", ".date("j", $tmpdate).", ".date("G", $tmpdate).", ".(date("i", $tmpdate)-1)."), ";
