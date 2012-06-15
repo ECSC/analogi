@@ -18,7 +18,7 @@ $query="SELECT count(alert.id) as res_cnt, alert.rule_id as res_id, signature.de
 	LIMIT ".$glb_indexsubtablelimit; 
 
 echo "<div class='top10header'>
-	<a href='#' class='tooltip'><img src='/images/help.png' /><span>Busiest rules in given time period.</span></a>
+	<a href='#' class='tooltip'><img src='./images/help.png' /><span>Busiest rules in given time period.</span></a>
 	Top Rule_ID, ".$inputhours." Hrs (lvl ".($inputlevel)."+)</div>";
 
 if(!$result=mysql_query($query, $db_ossec)){

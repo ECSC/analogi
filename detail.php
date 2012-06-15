@@ -7,6 +7,7 @@ require './top.php';
 
 ###  Get the criteria from the URL, these are used to populate the graph, and to populate the filter options further down
 
+
 $where="";
 
 # input<var> = the raw GET
@@ -97,15 +98,25 @@ while($row = @mysql_fetch_assoc($result)){
 
 
 ## filter rule_id
-if(isset($_GET['rule_id']) && is_numeric($_GET['rule_id']) && $_GET['rule_id']>0){
+if(isset($_GET['rule_id']) && strlen($_GET['rule_id'])>0){
 	$inputrule_id=$_GET['rule_id'];
 	$filterule_id=$inputrule_id;
-	$where.="AND alert.rule_id=".$inputrule_id." ";
+		
+	$inputrule_id_array=preg_split('/,/', $inputrule_id);
 
-	$query="select signature.description from signature where rule_id=".$inputrule_id;
-	$result=mysql_query($query, $db_ossec);
-	$row = @mysql_fetch_assoc($result);
-	$noterule_id="<span style='font-weight:bold;' >Rule ".$inputrule_id."</span>: ".$row['description'];
+	$where.="AND (1=0 ";
+	foreach ($inputrule_id_array as $value){
+		if(strlen($value)>0){
+			$where.="OR alert.rule_id=".$value." ";
+		}
+
+		$query="select signature.description from signature where rule_id=".$value;
+		$result=mysql_query($query, $db_ossec);
+		$row = @mysql_fetch_assoc($result);
+		$noterule_id.="<span style='font-weight:bold;' >Rule ".$value."</span>: ".$row['description']."<br/>";
+	}
+	$where.=")";
+
 }else{
 	$inputrule_id="";
 	$filterule_id=$inputrule_id;
@@ -155,9 +166,9 @@ if(isset($_GET['limit']) && is_numeric($_GET['limit']) && $_GET['limit']<1000){
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<link href="/style.css" rel="stylesheet" type="text/css" />
-<script src="/amcharts/amcharts.js" type="text/javascript"></script>
-<script src="/sortable.js" type="text/javascript"></script>
+<link href="./style.css" rel="stylesheet" type="text/css" />
+<script src="./amcharts/amcharts.js" type="text/javascript"></script>
+<script src="./sortable.js" type="text/javascript"></script>
 
 <script type="text/javascript">
 	var chart;
@@ -260,9 +271,11 @@ if(isset($_GET['limit']) && is_numeric($_GET['limit']) && $_GET['limit']<1000){
 <div class='top10header'>Filters</div>
 
 <div>
-	<form method='GET' action='/detail.php'>
+	<form method='GET' action='./detail.php'>
 		<div class='fleft filters'>
-			Rule_ID<br/>
+			RuleID
+			<a href="#" class="tooltip"><img src='./images/help.png' /><span>Comma separated allowed, e.g. "503,504"</span></a>
+			<br/>
 			<input type='text' size='6' name='rule_id' value='<?php echo $filterule_id; ?>' style='font-size:12px' />
 		</div>
 		<div class='fleft filters'>
@@ -295,13 +308,13 @@ if(isset($_GET['limit']) && is_numeric($_GET['limit']) && $_GET['limit']<1000){
 			</select>
 		</div>
 		<div class='fleft filters'>
-			<a href="#" class="tooltip"><img src='/images/help.png' /><span>Look for keywords in the full log entry</span></a>
+			<a href="#" class="tooltip"><img src='./images/help.png' /><span>Look for keywords in the full log entry</span></a>
 			Data Match
 			<br/>
 			<input type='text' size='7' name='datamatch' value='<?php echo $filterdatamatch; ?>' style='font-size:12px'/>
 		</div>
 		<div class='fleft filters'>
-			<a href="#" class="tooltip"><img src='/images/help.png' /><span>Look for rules containing keywords, i.e. 'XSS' will look for all rules that target XSS</span></a>
+			<a href="#" class="tooltip"><img src='./images/help.png' /><span>Look for rules containing keywords, i.e. 'XSS' will look for all rules that target XSS</span></a>
 			Rule Match
 			<br/>
 			<input type='text' size='7' name='rulematch' value='<?php echo $filterrulematch; ?>' style='font-size:12px' />
@@ -379,8 +392,11 @@ if(isset($_GET['limit']) && is_numeric($_GET['limit']) && $_GET['limit']<1000){
 	}else{
 		echo "<tr><td colspan='6'>".$rowcount." records shown.</td></tr>";
 	}
-	echo "</table>";
 
+	$detail2csv_get=preg_replace("/.*php\?/","",$_SERVER["REQUEST_URI"]);
+	echo "<tr><td><a href='./detail2csv.php?".$detail2csv_get."'>Download all ".$resultablerows." results as CSV</a></td></tr>";
+	echo "</table>";
+	
 
 	if($glb_detailsql==1){
 	#	For niceness show the SQL queries, just incase you want to dig deeper your self

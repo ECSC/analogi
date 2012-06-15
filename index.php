@@ -43,8 +43,18 @@ if(isset($_GET['field']) && $_GET['field']=='path'){
 }elseif(isset($_GET['field']) && $_GET['field']=='rule_id'){
 	$radiorule_id="checked";
 }else{
-	# default source
-	$radiosource="checked";
+	if($glb_graphbreakdown=="source"){
+		$radiosource="checked";
+	}elseif($glb_graphbreakdown=="path"){
+		$radiopath="checked";
+	}elseif($glb_graphbreakdown=="level"){
+		$radiolevel="checked";
+	}elseif($glb_graphbreakdown=="rule_id"){
+		$radiorule_id="checked";
+	}else{
+		# default source
+		$radiosource="checked";
+	}
 }
 
 
@@ -57,8 +67,8 @@ if(isset($_GET['field']) && $_GET['field']=='path'){
 <title>AnaLogi - OSSEC WUI</title>
 
 <meta http-equiv="refresh" content="<?php echo $glb_autorefresh; ?>" > 
-<link href="/style.css" rel="stylesheet" type="text/css" />
-<script src="/amcharts/amcharts.js" type="text/javascript"></script>
+<link href="./style.css" rel="stylesheet" type="text/css" />
+<script src="./amcharts/amcharts.js" type="text/javascript"></script>
 
 <script type="text/javascript">
 	var chart;
@@ -76,7 +86,7 @@ if(isset($_GET['field']) && $_GET['field']=='path'){
 		chart.startDuration = 0.5;
 		chart.balloon.color = "#000000";
 		chart.zoomOutOnDataUpdate=true;
-		chart.pathToImages = "/images/";
+		chart.pathToImages = "./images/";
 		chart.zoomOutButton = {
 			backgroundColor: '#000000',
 			backgroundAlpha: 0.15
@@ -181,7 +191,7 @@ if(isset($_GET['field']) && $_GET['field']=='path'){
 <div class='top10header'>Filters</div>
 
 <div>
-	<form method='GET' action='/index.php'>
+	<form method='GET' action='./index.php'>
 		<div class='fleft filters'>
 			Level<br/>
 			<select name='level'>

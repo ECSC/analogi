@@ -50,9 +50,8 @@ if(isset($_GET['breakdown']) && $_GET['breakdown']=='level'){
 		GROUP BY substring(alert.timestamp, 1, $substrsize), signature.level
 		ORDER BY substring(alert.timestamp, 1, $substrsize), signature.level";
 
-}elseif(isset($_GET['breakdown']) && $_GET['breakdown']=='rule_id'){
-
-	# breakdown by rule_id
+}elseif((isset($_GET['breakdown']) && $_GET['breakdown']=='rule_id') || (isset($_GET['source']) && strlen($_GET['source'])>0)){
+	# breakdown is set to source OR a source has been chosen
 
 	$keyprepend="Rule ";
 	$querychart="SELECT concat(substring(alert.timestamp, 1, $substrsize), '$zeros') as res_time, count(alert.id) as res_cnt, alert.rule_id as res_value

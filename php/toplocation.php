@@ -16,7 +16,7 @@ $query="SELECT count(alert.id) as res_cnt, SUBSTRING_INDEX(SUBSTRING_INDEX(locat
 
 
 echo "<div class='top10header' >
-	<a href='#' class='tooltip'><img src='/images/help.png' /><span>Busiest locations in given time frame.</span></a>
+	<a href='#' class='tooltip'><img src='./images/help.png' /><span>Busiest locations in given time frame.</span></a>
 	Top Loc, ".$inputhours." Hrs (Lvl ".$inputlevel."+)</div>";
 
 if(!$result=mysql_query($query, $db_ossec)){

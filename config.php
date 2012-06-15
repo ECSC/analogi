@@ -45,6 +45,12 @@ $glb_level=5;
 # implemeneted = yes
 $glb_hours=72;
 
+# Default graphbreakdown
+# Default graph breakdown on page load
+# implemented = yes
+# options = [source|path|level|rule_id]
+$glb_graphbreakdown="rule_id";
+
 # Graph key
 # Determines whether the index.php graph displays a key (keep in mind that you can hover over a dot to get the name, useful to disable for lots of servers
 # implemented = yes
@@ -97,6 +103,25 @@ $glb_detailsql=1;
 #$glb_detailtimestamp="H:i, jS m/Y";
 $glb_detailtimestamp="Y/m/d g:i:s";
 #$glb_detailtimestamp="H:i, jS m/Y";
+
+
+
+### OSSEC Database
+
+# List of databases
+# implemented = yes
+# 'Main' is the default database used if there are any problems, make this your standard database
+$glb_ossecdb['Main']="db_ossec.php";
+#$glb_ossecdb['Secondary']="db_ossec2.php";
+
+
+
+
+
+
+
+
+
 
 
 ?>

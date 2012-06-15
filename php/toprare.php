@@ -9,7 +9,7 @@
 # A better version of this interface is planned that will redesign the databse and made this nicer.
 
 echo "<div class='top10header'>
-	<a href='#' class='tooltip'><img src='/images/help.png' /><span>Alerts in this period, and the last time they were seen (oldest and rarest at the top)</span></a>
+	<a href='#' class='tooltip'><img src='./images/help.png' /><span>Alerts in this period, and the last time they were seen (oldest and rarest at the top)</span></a>
 	Rare in ".$inputhours." Hrs, last seen (Lvl ".$inputlevel."+)</div>";
 
 $query="select distinct(alert.rule_id)

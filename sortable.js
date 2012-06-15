@@ -9,7 +9,7 @@ Version 1.5.7
 */
 
 /* You can change these values */
-var image_path = "/images/";
+var image_path = "./images/";
 var image_up = "arrow_up.png";
 var image_down = "arrow_down.png";
 var image_none = "arrow_refresh_small.png";

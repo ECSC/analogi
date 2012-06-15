@@ -6,7 +6,18 @@
 
 include './config.php';
 include './functions.php';
-include './db_ossec.php';
+
+
+if (isset($_COOKIE['ossecdbjs']) && $glb_ossecdb[$_COOKIE['ossecdbjs']]<>'' && file_exists('./'.$glb_ossecdb[$_COOKIE['ossecdbjs']])){
+	# If a database cookie is set AND it exists in $glb_ossecdb[] AND the database file exists 
+	$useossecdb='./'.$glb_ossecdb[$_COOKIE['ossecdbjs']];
+}else{
+	# Otherwise just use the main one
+	$useossecdb='./'.$glb_ossecdb['Main'];
+}
+
+include $useossecdb;
+
 
 ## This does work but I have commented as not everyone will have icinga installed.
 ## If you want to play uncomment this, and the link in index.php

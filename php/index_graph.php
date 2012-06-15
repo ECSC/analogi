@@ -7,7 +7,6 @@
 $mainstring="";
 $keyprepend="";
 $notrepresented=array();
-$notrepresentedstring="";
 
 # counting in hours/days may get slow on larger databases, so grouping is done in blocks of 10^x seconds
 if($inputhours<4){
@@ -23,7 +22,7 @@ if($inputhours<4){
 
 
 # The graph data 'series' can be broken down in several ways
-if(isset($_GET['field']) && $_GET['field']=='path'){
+if((isset($_GET['field']) && $_GET['field']=='path') || (!isset($_GET['field']) && $glb_graphbreakdown=="path") ){
 	$querychart="select concat(substring(alert.timestamp, 1, $substrsize), '$zeros') as res_time, count(alert.id) as res_cnt, SUBSTRING_INDEX(location.name, '->', -1) as res_field
 		from alert
 		left join location on alert.location_id=location.id
@@ -33,7 +32,7 @@ if(isset($_GET['field']) && $_GET['field']=='path'){
 		group by substring(alert.timestamp, 1, $substrsize), SUBSTRING_INDEX(location.name, '->', -1)
 		order by substring(alert.timestamp, 1, $substrsize), SUBSTRING_INDEX(location.name, '->', -1)";
 
-}elseif(isset($_GET['field']) && $_GET['field']=='level'){
+}elseif((isset($_GET['field']) && $_GET['field']=='level') || (!isset($_GET['field']) && $glb_graphbreakdown=="level") ){
 	$keyprepend="Lvl: ";
 
 	$querychart="select concat(substring(alert.timestamp, 1, $substrsize), '$zeros') as res_time, count(alert.id) as res_cnt, signature.level as res_field
@@ -44,7 +43,8 @@ if(isset($_GET['field']) && $_GET['field']=='path'){
 		and alert.timestamp>".(time()-($inputhours*3600))."
 		group by substring(alert.timestamp, 1, $substrsize), signature.level
 		order by substring(alert.timestamp, 1, $substrsize), signature.level";
-}elseif(isset($_GET['field']) && $_GET['field']=='rule_id'){
+
+}elseif((isset($_GET['field']) && $_GET['field']=='rule_id') || (!isset($_GET['field']) && $glb_graphbreakdown=="rule_id")){
 	$keyprepend="Rule ID: ";
 	$querychart="select concat(substring(alert.timestamp, 1, $substrsize), '$zeros') as res_time, count(alert.id) as res_cnt, alert.rule_id as res_field
 		from alert
