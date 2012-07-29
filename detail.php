@@ -15,7 +15,7 @@ $where="";
 # where = the cumulative sql command
 
 ## filter criteria 'level'
-if(isset($_GET['level']) && is_numeric($_GET['level']) && $_GET['level']>0){
+if(isset($_GET['level']) && is_numeric($_GET['level']) && $_GET['level']>=0){
 	$inputlevel=$_GET['level'];
 	$where.="AND signature.level>=".$inputlevel." ";
 }else{
@@ -186,7 +186,7 @@ if(isset($_GET['limit']) && is_numeric($_GET['limit']) && $_GET['limit']<1000){
 		chart.startDuration = 0.5;
 		chart.balloon.color = "#000000";
 		chart.zoomOutOnDataUpdate=true;
-		chart.pathToImages = "/images/";
+		chart.pathToImages = "./images/";
 		chart.zoomOutButton = {
 			backgroundColor: '#000000',
 			backgroundAlpha: 0.15
@@ -281,7 +281,7 @@ if(isset($_GET['limit']) && is_numeric($_GET['limit']) && $_GET['limit']<1000){
 		<div class='fleft filters'>
 			Level<br/>
 			<select name='level' style='font-size:12px' >
-				<option value='0'>--</option>
+				<option value=''>--</option>
 				<?php echo $filterlevel; ?>
 			</select>
 		</div>

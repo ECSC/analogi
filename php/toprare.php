@@ -46,7 +46,7 @@ asort($lastrare);
 $i=0;
 $mainstring="";
 foreach ($lastrare as $key => $val) {
-	if($i<$glb_indexsubtablelimit){
+	if($i<$glb_indexsubtablelimit && trim($val)!="||"){
 		$display=explode("||", $val);
 		$mainstring.="<div class='fleft top10data' style='width:90px;'>".date("dS M H:i", $display[0])."</div>
 				<div class='fright top10data' style='text-align:right; width:*' ><a class='top10data' href='./detail.php?rule_id=".$key."&breakdown=source'>".htmlspecialchars($display[1])."</a></div>
