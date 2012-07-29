@@ -36,7 +36,10 @@ if(isset($_GET['hours']) && preg_match("/^[0-9]+$/", $_GET['hours'])){
 $radiosource="";
 $radiopath="";
 $radiolevel="";
-if(isset($_GET['field']) && $_GET['field']=='path'){
+if(isset($_GET['field']) && $_GET['field']=='source'){
+    $radiosource="checked";
+}elseif(isset($_GET['field']) && $_GET['field']=='path'){
+
 	$radiopath="checked";
 }elseif(isset($_GET['field']) && $_GET['field']=='level'){
 	$radiolevel="checked";
