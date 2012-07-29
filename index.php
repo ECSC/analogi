@@ -8,7 +8,7 @@ require './top.php';
 
 
 ## filter criteria 'level'
-if(isset($_GET['level']) && is_numeric($_GET['level']) && $_GET['level']>0){
+if(isset($_GET['level']) && is_numeric($_GET['level']) && $_GET['level']>=0){
 	$inputlevel=$_GET['level'];
 }else{
 	$inputlevel=$glb_level;
