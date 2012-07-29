@@ -32,7 +32,7 @@ $from=date("Hi dmy", (time()-($inputhours*3600)));
 
 while($row = @mysql_fetch_assoc($result)){
 	$mainstring.="<div class='fleft top10data' style='width:60px'>".$row['res_cnt']."</div>
-			<div class='fleft top10data'><a class='top10data' href='./detail.php?rule_id=".$row['res_rule']."&from=".$from."&breakdown=source'>".htmlspecialchars(substr($row['res_desc'], 0, 28))."...</a></div>
+			<div class='fleft top10data'><a class='top10data tooltip_small' href='./detail.php?rule_id=".$row['res_rule']."&from=".$from."&breakdown=source'>".htmlspecialchars(substr($row['res_desc'], 0, 28))."...<span>".htmlspecialchars($row['res_desc'])."</span></a></div>
 			<div class='clr'></div>";
 }
 $mainstring.="";

@@ -12,7 +12,7 @@ div{border-style:solid;margin:0px; border-style:solid;border-width:0px;}
 
 .maincol{width:33%}
 
-.top10header{text-transform: font-weight: bold;border-left: 6px solid #005482; color: #363636; font-size: 20px;  padding: 7px 0 7px 10px;font-family: Helvetica,Arial,sans-serif;}
+.top10header{text-transform: capitalize; font-weight: bold;border-left: 6px solid #005482; color: #363636; font-size: 20px;  padding: 7px 0 7px 10px;font-family: Helvetica,Arial,sans-serif;}
 
 .top10data{text-transform: capitalize; font-weight: bold; color: #363636; font-size: 12px;  font-family: Helvetica,Arial,sans-serif;padding-left:1px;}
 
@@ -141,4 +141,27 @@ border-bottom: 0;
 {
 border-top-color: #ccc;
 bottom: -8px;
+}
+
+a.tooltip_small {
+  position: relative;
+}
+
+a.tooltip_small span {
+  display: none;
+  text-decoration: none;
+}
+
+a.tooltip_small:hover span {
+  display: block;
+  position: absolute;
+  top: 0px;
+  left: 200px;
+  width: 200px;
+  z-index: 100;
+  color: #fff;
+  background: #005482;
+  text-align: left;
+  text-decoration: none;
+  font-weight: normal;
 }
