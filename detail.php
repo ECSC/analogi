@@ -15,7 +15,7 @@ $where="";
 # where = the cumulative sql command
 
 ## filter criteria 'level'
-if(isset($_GET['level']) && is_numeric($_GET['level']) && $_GET['level']>0){
+if(isset($_GET['level']) && is_numeric($_GET['level']) && $_GET['level']>=0){
 	$inputlevel=$_GET['level'];
 	$where.="AND signature.level>=".$inputlevel." ";
 }else{
@@ -161,7 +161,24 @@ if(isset($_GET['limit']) && is_numeric($_GET['limit']) && $_GET['limit']<1000){
 
 
 
+#function highlight($string, $term){
+#	$term = preg_replace('/\s+/', ' ', trim($term));
+#	$words = explode(' ', $term);
+#	$highlighted = array();
+#	foreach ( $words as $word ){
+#	    $highlighted[] = "<span class='highlight'>".$word."</span>";
+#	}
+#
+#	return str_replace($words, $highlighted, $string);
+#}
+
+
+
+
+
 ?>
+
+
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -171,6 +188,13 @@ if(isset($_GET['limit']) && is_numeric($_GET['limit']) && $_GET['limit']<1000){
 <script src="./sortable.js" type="text/javascript"></script>
 
 <script type="text/javascript">
+
+	function databasetest(){
+		<!--  If no data, alerts will be created in here  -->
+		<?php include './databasetest.php' ?>
+
+	}
+
 	var chart;
 
 	<?php
@@ -186,7 +210,7 @@ if(isset($_GET['limit']) && is_numeric($_GET['limit']) && $_GET['limit']<1000){
 		chart.startDuration = 0.5;
 		chart.balloon.color = "#000000";
 		chart.zoomOutOnDataUpdate=true;
-		chart.pathToImages = "/images/";
+		chart.pathToImages = "./images/";
 		chart.zoomOutButton = {
 			backgroundColor: '#000000',
 			backgroundAlpha: 0.15
@@ -206,6 +230,7 @@ if(isset($_GET['limit']) && is_numeric($_GET['limit']) && $_GET['limit']<1000){
 		categoryAxis.position = "top";		
 		categoryAxis.parseDates = true;
 		categoryAxis.minPeriod = "mm";
+		categoryAxis.equalSpacing = false;
 
 		// value
 		var valueAxis = new AmCharts.ValueAxis();
@@ -258,7 +283,7 @@ if(isset($_GET['limit']) && is_numeric($_GET['limit']) && $_GET['limit']<1000){
 	
 
 </head>
-<body>
+<body onload="databasetest()">
 
 <?php include './header.php'; ?>
 		
@@ -281,7 +306,7 @@ if(isset($_GET['limit']) && is_numeric($_GET['limit']) && $_GET['limit']<1000){
 		<div class='fleft filters'>
 			Level<br/>
 			<select name='level' style='font-size:12px' >
-				<option value='0'>--</option>
+				<option value=''>--</option>
 				<?php echo $filterlevel; ?>
 			</select>
 		</div>
@@ -332,22 +357,22 @@ if(isset($_GET['limit']) && is_numeric($_GET['limit']) && $_GET['limit']<1000){
 <?php
 	# Count the queries for the last line of the table.
 	$querycounttable="SELECT alert.id
-		FROM alert
-		LEFT JOIN location on alert.location_id=location.id
-		LEFT JOIN signature on alert.rule_id=signature.rule_id
-		LEFT JOIN data on alert.id=data.id
+		FROM alert, location, signature, data
 		WHERE 1=1
+		and alert.location_id=location.id
+		and alert.rule_id=signature.rule_id
+		and alert.id=data.id
 		".$where;
 	$resultcounttable=mysql_query($querycounttable, $db_ossec);
 	$resultablerows=mysql_num_rows($resultcounttable);
 	
 	# Fetch the actual rows of data for the table
 	$querytable="SELECT alert.id as id, alert.rule_id as rule, signature.level as lvl, alert.timestamp as timestamp, location.name as loc, data.full_log as data
-		FROM alert
-		LEFT JOIN location on alert.location_id=location.id
-		LEFT JOIN signature on alert.rule_id=signature.rule_id
-		LEFT JOIN data on alert.id=data.id
+		FROM alert, location, signature, data
 		WHERE 1=1
+		and alert.location_id=location.id
+		and alert.rule_id=signature.rule_id
+		and alert.id=data.id
 		".$where."
 		ORDER BY alert.timestamp DESC
 		LIMIT ".$inputlimit;		
@@ -359,6 +384,15 @@ if(isset($_GET['limit']) && is_numeric($_GET['limit']) && $_GET['limit']<1000){
 		</tr>";
 	
 	$rowcount=0;
+
+	# This sets up the ability to highlight keywords below
+	$term = preg_replace('/\|+/', '|', trim($glb_autohighlight));
+	$words = explode('|', $term);
+	$highlighted = array();
+	foreach ( $words as $word ){
+	    $highlighted[] = "<span class='highlight'>".$word."</span>";
+	}
+
 
 	while($rowtable = @mysql_fetch_assoc($resulttable)){
 
@@ -376,7 +410,7 @@ if(isset($_GET['limit']) && is_numeric($_GET['limit']) && $_GET['limit']<1000){
 		echo "<td>".htmlspecialchars($rowtable['lvl'])."</td>";
 		echo "<td>".date($glb_detailtimestamp, $rowtable['timestamp'])."</td>";
 		echo "<td>".htmlspecialchars($rowtable['loc'])."</td>";
-		echo "<td>".$tabledata."</td>";
+		echo "<td>".str_replace($words, $highlighted, htmlspecialchars($rowtable['data']))."</td>";
 		echo "</tr>";
 
 	}
@@ -386,7 +420,7 @@ if(isset($_GET['limit']) && is_numeric($_GET['limit']) && $_GET['limit']<1000){
 	# This final line has to be a separate table for the 'sortable' to work
 	echo "<table class='dump sortable' style='width:100%' >";
 	if($rowcount==0){
-		echo "<tr><td><span style='color:red'>No data found</span>.</td><td></td><td></td><td></td><td></td><td></td></tr>";
+		echo "<tr><td><span style='color:red'>No data found, is your database populated?</span>.</td><td></td><td></td><td></td><td></td><td></td></tr>";
 	}elseif($rowcount==$glb_detailtablelimit){
 		echo "<tr><td colspan='6'><span style='color:red'>Search limited</span> to latest ".$rowcount." (of ".$resultablerows.") results as per your global config. Please refine your search on increase the limit.</td></tr>";
 	}else{

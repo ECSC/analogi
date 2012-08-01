@@ -20,7 +20,8 @@ function quote_smart($value){
 # glb_notrepresentedwhitelist
 $glb_notrepresentedwhitelist_sql="";
 foreach ($glb_notrepresentedwhitelist as $i){
-	$glb_notrepresentedwhitelist_sql.=" AND location.name NOT LIKE '%".$i."%'";
+	$glb_notrepresentedwhitelist_sql.=" AND location.name NOT LIKE '(".$i."%'";
+
 
 }
 

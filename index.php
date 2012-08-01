@@ -8,7 +8,7 @@ require './top.php';
 
 
 ## filter criteria 'level'
-if(isset($_GET['level']) && is_numeric($_GET['level']) && $_GET['level']>0){
+if(isset($_GET['level']) && is_numeric($_GET['level']) && $_GET['level']>=0){
 	$inputlevel=$_GET['level'];
 }else{
 	$inputlevel=$glb_level;
@@ -31,17 +31,39 @@ if(isset($_GET['hours']) && preg_match("/^[0-9]+$/", $_GET['hours'])){
 	$inputhours=$glb_hours;
 } 
 
+## filter category
+if(isset($_GET['category']) && is_numeric($_GET['category']) && $_GET['category']>=0){
+	$inputcategory=$_GET['category'];
+	$wherecategory=" AND category.cat_id=".$inputcategory." ";
+}else{
+	$wherecategory=" ";
+}
+$query="SELECT *
+	FROM category
+	ORDER BY cat_name";
+$result=mysql_query($query, $db_ossec);
+while($row = @mysql_fetch_assoc($result)){
+	$selected="";
+        if($row['cat_id']==$inputcategory){
+                $selected=" SELECTED";
+        }
+	$filtercategory.="<option value='".$row['cat_id']."'".$selected.">".$row['cat_name']."</option>";
+}
+
 
 ## filter
 $radiosource="";
 $radiopath="";
 $radiolevel="";
+$radiorule_id="";
 if(isset($_GET['field']) && $_GET['field']=='path'){
 	$radiopath="checked";
 }elseif(isset($_GET['field']) && $_GET['field']=='level'){
 	$radiolevel="checked";
 }elseif(isset($_GET['field']) && $_GET['field']=='rule_id'){
 	$radiorule_id="checked";
+}elseif(isset($_GET['field']) && $_GET['field']=='source'){
+	$radiosource="checked";
 }else{
 	if($glb_graphbreakdown=="source"){
 		$radiosource="checked";
@@ -71,6 +93,15 @@ if(isset($_GET['field']) && $_GET['field']=='path'){
 <script src="./amcharts/amcharts.js" type="text/javascript"></script>
 
 <script type="text/javascript">
+
+	function databasetest(){
+		<!--  If no data, alerts will be created in here  -->
+		<?php #include './databasetest.php' ?>
+
+	}
+
+
+
 	var chart;
 
 	<?php
@@ -173,20 +204,25 @@ if(isset($_GET['field']) && $_GET['field']=='path'){
 		?>
 
 
+		
+		<?php
+		echo $graphheight;
+		?>
 		// WRITE
 		chart.write("chartdiv");
+
 	});
 </script>
 	
 
 </head>
-<body>
+<body onload="databasetest();">
 
 <?php include './header.php'; ?>
 		
 <div class='clr'></div>	
 
-<div id="chartdiv" style="width:100%; height:500px;"></div>
+<div id="chartdiv" style="width:100%; height:500px;"><?php echo $nodatastring; ?></div>
 	
 <div class='top10header'>Filters</div>
 
@@ -209,6 +245,13 @@ if(isset($_GET['field']) && $_GET['field']=='path'){
 			<input type='radio' name='field' value='path' <?php echo $radiopath; ?> />Path
 			<input type='radio' name='field' value='level' <?php echo $radiolevel; ?> />Level
 			<input type='radio' name='field' value='rule_id' <?php echo $radiorule_id; ?> />Rule ID
+		</div>
+		<div class='fleft filters'>
+			Category<br/>
+			<select name='category'>
+				<option value=''>--</option>
+				<?php echo $filtercategory; ?>
+			</select>
 		</div>
 		<div class='fleft filters'>
 			<br/>

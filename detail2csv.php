@@ -117,11 +117,11 @@ if(isset($_GET['rulematch']) && strlen($_GET['rulematch'])>0){
 
 
 $querytable="SELECT alert.id as id, alert.rule_id as rule, signature.level as lvl, alert.timestamp as timestamp, location.name as loc, data.full_log as data
-	FROM alert
-	LEFT JOIN location on alert.location_id=location.id
-	LEFT JOIN signature on alert.rule_id=signature.rule_id
-	LEFT JOIN data on alert.id=data.id
+	FROM alert, location, signature, data
 	WHERE 1=1
+	and alert.location_id=location.id
+	and alert.rule_id=signature.rule_id
+	and alert.id=data.id
 	".$where."
 	ORDER BY alert.timestamp DESC";
 $resulttable=mysql_query($querytable, $db_ossec);

@@ -8,7 +8,6 @@
 </div>
 
 
-
 <div class="fright" style='margin-top:10px;margin-bottom:10px;' >
 	<?php
 	if(count($glb_ossecdb)>1){
@@ -31,3 +30,10 @@
 	?>
 </div>
 
+<div class="fright" style='margin-top:15px;margin-bottom:10px;margin-right:30px;' >
+	<a class='tiny tinyblack' href='./index.php'>Index</a>
+	<a class='tiny tinyblack' href='./newsfeed.php'>NewsFeed</a>
+	<a class='tiny tinyblack' href='./detail.php'>Detail</a>
+	<a class='tiny tinyblack' onclick='alert("Warning : Due to the complexity of the code, this page may take a few minute to load."); window.location="./management.php"' href='#' >Management</a>
+	<a class='tiny tinyblack' href='https://github.com/ECSC/analogi/downloads'>Latest Version</a>
+</div>

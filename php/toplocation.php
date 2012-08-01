@@ -5,11 +5,15 @@
  */
 
 $query="SELECT count(alert.id) as res_cnt, SUBSTRING_INDEX(SUBSTRING_INDEX(location.name, ' ', 1), '->', 1) as res_name, location.id as res_id
-	FROM alert 
-	LEFT JOIN location ON alert.location_id = location.id
-	LEFT JOIN signature ON alert.rule_id = signature.rule_id
+	FROM alert, location, signature, signature_category_mapping, category
 	WHERE signature.level>='".$inputlevel."'
+	and alert.location_id = location.id
+	and alert.rule_id = signature.rule_id
+	and alert.rule_id=signature_category_mapping.rule_id
+	and signature_category_mapping.cat_id=category.cat_id
 	AND alert.timestamp>'".(time()-($inputhours*60*60))."'
+	".$wherecategory." 
+	".$glb_notrepresentedwhitelist_sql."
 	GROUP BY res_name
 	ORDER BY res_cnt DESC
 	LIMIT ".$glb_indexsubtablelimit;
@@ -24,6 +28,7 @@ if(!$result=mysql_query($query, $db_ossec)){
 }
 
 $mainstring="";
+
 $from=date("Hi dmy", (time()-($inputhours*3600)));
 if(isset($_GET['level'])){
 	$detailshours="&level=".$inputlevel;
@@ -36,8 +41,11 @@ while($row = @mysql_fetch_assoc($result)){
 			<div class='fleft top10data'><a class='top10data' href='./detail.php?source=".$row['res_name']."&from=".$from.$detailshours."&breakdown=rule_id'>".htmlspecialchars(preg_replace($glb_hostnamereplace, "", $row['res_name']))."</a></div>
 			<div class='clr'></div>";
 }
-$mainstring.="";
 
-echo $mainstring;
+if($mainstring==""){
+	echo $glb_nodatastring;
+}else{
+	echo $mainstring;
+}
 
 ?>

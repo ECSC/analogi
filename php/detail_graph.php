@@ -41,11 +41,11 @@ if(isset($_GET['breakdown']) && $_GET['breakdown']=='level'){
 
 	$keyprepend="Level ";
 	$querychart="SELECT concat(substring(alert.timestamp, 1, $substrsize), '$zeros') as res_time, count(alert.id) as res_cnt, signature.level as res_value
-		FROM alert
-		LEFT JOIN location on alert.location_id=location.id
-		LEFT JOIN signature on alert.rule_id=signature.rule_id
-		LEFT JOIN data on alert.id=data.id
+		FROM alert, location, signature, data
 		WHERE 1=1
+		AND alert.location_id=location.id
+		AND alert.rule_id=signature.rule_id
+		AND alert.id=data.id
 		".$where."
 		GROUP BY substring(alert.timestamp, 1, $substrsize), signature.level
 		ORDER BY substring(alert.timestamp, 1, $substrsize), signature.level";
@@ -55,22 +55,22 @@ if(isset($_GET['breakdown']) && $_GET['breakdown']=='level'){
 
 	$keyprepend="Rule ";
 	$querychart="SELECT concat(substring(alert.timestamp, 1, $substrsize), '$zeros') as res_time, count(alert.id) as res_cnt, alert.rule_id as res_value
-		FROM alert
-		LEFT JOIN location on alert.location_id=location.id
-		LEFT JOIN signature on alert.rule_id=signature.rule_id
-		LEFT JOIN data on alert.id=data.id
+		FROM alert, location, signature, data
 		WHERE 1=1
+		AND alert.location_id=location.id
+		AND alert.rule_id=signature.rule_id
+		AND alert.id=data.id
 		".$where."
 		GROUP BY substring(alert.timestamp, 1, $substrsize), alert.rule_id
 		ORDER BY substring(alert.timestamp, 1, $substrsize), alert.rule_id";
 }else{
 	# Default - i.e. if not chosen, or if set to 'source'
 	$querychart="SELECT concat(substring(alert.timestamp, 1, $substrsize), '$zeros') as res_time, count(alert.id) as res_cnt, SUBSTRING_INDEX(location.name, ' ', 1) as res_value
-		FROM alert
-		LEFT JOIN location on alert.location_id=location.id
-		LEFT JOIN signature on alert.rule_id=signature.rule_id
-		LEFT JOIN data on alert.id=data.id
+		FROM alert, location, signature, data
 		WHERE 1=1
+		AND alert.location_id=location.id
+		AND alert.rule_id=signature.rule_id
+		AND alert.id=data.id
 		".$where."
 		GROUP BY substring(alert.timestamp, 1, $substrsize), SUBSTRING_INDEX(location.name, ' ', 1)
 		ORDER BY substring(alert.timestamp, 1, $substrsize), SUBSTRING_INDEX(location.name, ' ', 1)";
@@ -105,7 +105,7 @@ while($rowchart = @mysql_fetch_assoc($resultchart)){
 	# This alert is a new time 'group'...
 	if($tmpdate!=$rowchart['res_time']){
 		# ...so what we have compiled needs to go to 'mainstring' (remember to use tmpdate, not the latest row time)
-	        $mainstring.= "	{date: new Date(".date("Y", $tmpdate).", ".(date("m", $tmpdate)-1).", ".date("j", $tmpdate).", ".date("G", $tmpdate).", ".(date("i", $tmpdate)-1)."), ";
+	        $mainstring.= "	{date: new Date(".date("Y", $tmpdate).", ".(date("m", $tmpdate)-1).", ".date("j", $tmpdate).", ".date("G", $tmpdate).", ".(date("i", $tmpdate))."), ";
 		
 		foreach($timegrouping as $key=>$val){
 			#append this location to array
@@ -171,6 +171,7 @@ $graphlines.='
 		graph'.$i.'.bullet = "round";
 		graph'.$i.'.hideBulletsCount = 30;
 		graph'.$i.'.balloonText = "'.$location.' : level '.$glb_level.'+ : [[value]]";
+		graph'.$i.'.connect = false;
 		chart.addGraph(graph'.$i.');
 ';
 }

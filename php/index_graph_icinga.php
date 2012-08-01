@@ -10,9 +10,9 @@ echo"
 
 
 $query="SELECT Unix_Timestamp(start_time) as itime, output, name1 
-FROM icinga_notifications
-LEFT JOIN icinga_objects ON icinga_notifications.object_id=icinga_objects.object_id
+FROM icinga_notifications, icinga_objects
 WHERE long_output like '%uptime%' 
+AND icinga_notifications.object_id=icinga_objects.object_id
 AND long_output like '%0 hours%' 
 AND Unix_Timestamp(start_time)>".(time()-($inputhours*3600)).";";
 

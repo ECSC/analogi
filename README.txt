@@ -43,4 +43,7 @@ http://www.famfamfam.com/lab/icons/silk/
 Hover text
 http://www.spiceupyourblog.com/2011/05/simple-css-only-tooltip-descriptions.html
 
+Christian Beer 
+For help with bug fixing :)
+
 And last, but certainly not least, OSSEC/Dan!
