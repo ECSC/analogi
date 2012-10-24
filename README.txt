@@ -43,7 +43,15 @@ http://www.famfamfam.com/lab/icons/silk/
 Hover text
 http://www.spiceupyourblog.com/2011/05/simple-css-only-tooltip-descriptions.html
 
-Christian Beer 
-For help with bug fixing :)
+Show Hide Div
+http://www.randomsnippets.com/2011/04/10/how-to-hide-show-or-toggle-your-div-with-jquery/
+
+Christian Beer, Fabien Bourdaire, Matthew Hall, Max Batsurin
+For help with bug fixing and general support
+
+FreeGeoIP.net
+http://freegeoip.net/static/index.html
+(Including maxmind.com and google maps)
 
 And last, but certainly not least, OSSEC/Dan!
+

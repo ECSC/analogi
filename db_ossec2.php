@@ -5,7 +5,7 @@
  */
 
 define ('DB_USER_O', 'ossecuser');
-define ('DB_PASSWORD_O', 'abc123!!');
+define ('DB_PASSWORD_O', 'password');
 define ('DB_HOST_O', '127.0.0.1');
 define ('DB_NAME_O', 'ossec');
 

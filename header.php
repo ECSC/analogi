@@ -31,9 +31,15 @@
 </div>
 
 <div class="fright" style='margin-top:15px;margin-bottom:10px;margin-right:30px;' >
-	<a class='tiny tinyblack' href='./index.php'>Index</a>
-	<a class='tiny tinyblack' href='./newsfeed.php'>NewsFeed</a>
-	<a class='tiny tinyblack' href='./detail.php'>Detail</a>
+	<a class='tiny tinyblack' href='./index.php?'>Index</a>
+	<a class='tiny tinyblack' href='./newsfeed.php?'>NewsFeed</a>
+	<a class='tiny tinyblack' href='./massmonitoring.php?'>Mass Monitoring</a>
+	<a class='tiny tinyblack' href='./detail.php?from=<?php echo date("Hi dmy", (time()-(3600*24*30))) ?>'>Detail</a>
+	<a class='tiny tinyblack' href='./ip_info.php?'>IP Info</a>
 	<a class='tiny tinyblack' onclick='alert("Warning : Due to the complexity of the code, this page may take a few minute to load."); window.location="./management.php"' href='#' >Management</a>
-	<a class='tiny tinyblack' href='https://github.com/ECSC/analogi/downloads'>Latest Version</a>
+	<a class='tiny tinyblack' href='./about.php'>About</a>
+	<br>
+	<?php
+	echo $wallboard_url;
+	?>
 </div>

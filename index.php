@@ -8,13 +8,14 @@ require './top.php';
 
 
 ## filter criteria 'level'
-if(isset($_GET['level']) && is_numeric($_GET['level']) && $_GET['level']>=0){
+if(isset($_GET['level']) && preg_match("/^[0-9]+$/", $_GET['level'])){
 	$inputlevel=$_GET['level'];
 }else{
 	$inputlevel=$glb_level;
 }
 $query="SELECT distinct(level) FROM signature ORDER BY level";
 $result=mysql_query($query, $db_ossec);
+$filterlevel="";
 while($row = @mysql_fetch_assoc($result)){
 	$selected="";
 	if($row['level']==$inputlevel){
@@ -32,16 +33,18 @@ if(isset($_GET['hours']) && preg_match("/^[0-9]+$/", $_GET['hours'])){
 } 
 
 ## filter category
-if(isset($_GET['category']) && is_numeric($_GET['category']) && $_GET['category']>=0){
+if(isset($_GET['category']) && preg_match("/^[0-9]+$/", $_GET['category'])){
 	$inputcategory=$_GET['category'];
 	$wherecategory=" AND category.cat_id=".$inputcategory." ";
 }else{
+	$inputcategory="";
 	$wherecategory=" ";
 }
 $query="SELECT *
 	FROM category
 	ORDER BY cat_name";
 $result=mysql_query($query, $db_ossec);
+$filtercategory="";
 while($row = @mysql_fetch_assoc($result)){
 	$selected="";
         if($row['cat_id']==$inputcategory){
@@ -88,7 +91,11 @@ if(isset($_GET['field']) && $_GET['field']=='path'){
 <head>
 <title>AnaLogi - OSSEC WUI</title>
 
-<meta http-equiv="refresh" content="<?php echo $glb_autorefresh; ?>" > 
+
+<?php
+include "page_refresh.php";
+?>
+
 <link href="./style.css" rel="stylesheet" type="text/css" />
 <script src="./amcharts/amcharts.js" type="text/javascript"></script>
 
@@ -158,7 +165,9 @@ if(isset($_GET['field']) && $_GET['field']=='path'){
 		var chartScrollbar = new AmCharts.ChartScrollbar();
 		chartScrollbar.graph = graph0;
 		chartScrollbar.scrollbarHeight = 40;
-		chartScrollbar.color = "#FFFFFF";
+		chartScrollbar.color = "#000000";
+		chartScrollbar.gridColor = "#000000";
+		chartScrollbar.backgroundColor = "#FFFFFF";
 		chartScrollbar.autoGridCount = true;
 		chart.addChartScrollbar(chartScrollbar);
 
@@ -222,7 +231,7 @@ if(isset($_GET['field']) && $_GET['field']=='path'){
 		
 <div class='clr'></div>	
 
-<div id="chartdiv" style="width:100%; height:500px;"><?php echo $nodatastring; ?></div>
+<div id="chartdiv" style="width:100%; height:500px;"><?php echo $nochartdata; ?></div>
 	
 <div class='top10header'>Filters</div>
 
@@ -279,9 +288,9 @@ if(isset($_GET['field']) && $_GET['field']=='path'){
 
 <div class='clr'></div>
 
-<div style='padding:40px ;width:95%; text-align:center;'>
-	<a class='tiny' href='http://www.ecsc.co.uk/'>ECSC | Vendor Independent Information Security Specialists</a>
-</div>
+<?php
+?>
 
-</body>
-</html>
+<?php
+include './footer.php';
+?>

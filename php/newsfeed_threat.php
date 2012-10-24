@@ -4,18 +4,31 @@
  * This program is free software; Distributed under the terms of the GNU GPL v3.
  */
 	
-	$query="SELECT alert.timestamp, alert.id, substring_index(substring_index(name, ' ', 1), '->', 1) as source, substring_index(name,'->',-1) as path, alert.rule_id, signature.level, signature.description, (alert.timestamp + (".$glb_threatbooster."*86400*signature.level)) as t1, data.full_log as data
-		FROM alert, location, signature, data
-		WHERE signature.level>4
-		AND location.id = alert.location_id 
-		AND signature.rule_id = alert.rule_id 
-		AND alert.id=data.id
-		AND alert.timestamp>".(time()-(86400*$glb_threatdays))." 
-		ORDER BY t1 DESC 
-		LIMIT ".$glb_threatlimit.";";
+$query="SELECT 	count(alert.rule_id) as count,
+		max(alert.timestamp) as timestamp, 
+		substring_index(substring_index(location.name, ' ', 1), '->', 1) as source, 
+		alert.rule_id as rule_id,
+		signature.level,
+		signature.description,
+		data.full_log as data
+	FROM alert, location, signature, data
+	WHERE alert.timestamp>".(time()-($glb_threatdays*3600*24))."
+	AND signature.level>".$glb_threatlevel."
+	AND alert.rule_id = signature.rule_id
+	AND alert.location_id = location.id
+	AND alert.id = data.id
+	GROUP BY source, rule_id
+	ORDER BY level DESC, timestamp
+	LIMIT ".$glb_threatlimit.";";
+
+if($glb_debug==1){
+	
+	echo "<div style='font-size:24px; color:red;font-family: Helvetica,Arial,sans-serif;'>Debug</div>"; 
+	echo $query;
+
+}else{
 
 	$result=mysql_query($query, $db_ossec);
-	
 	
 	$threatcount=0;
 
@@ -23,10 +36,12 @@
 	echo "
 	<table style='width:100%;'>
 	<tr>
-		<th class='big'>Date</th>
+		
+		<th class='big'>Level</th>
 		<th class='big'>Location</th>
 		<th class='big'>Rule</th>
-		<th class='big'>Level</th>
+		<th class='big'>Last Seen</th>
+		<th class='big'>Count</th>
 		<th class='big'>Data</th>
 	</tr>
 	";
@@ -36,15 +51,18 @@
 		$threatcount=1;
 		
 		echo "<tr>
-			<td>".date("D M j G:i:s", $row['timestamp'])."</td>
-			<td>".$row['source']."</td>
-			<td>".substr($row['description'], 0, 25)."...</td>
 			<td>".$row['level']."</td>
-			<td><a class='tooltip_small 'href='detail.php?rule_id=".$row['rule_id']."&from=".date("Gi dmy", time()-(86400*30))."&source=".$row['source']."'>Link<span style='left:50px; width:450px'>".$row['data']."</span></a></td>
+			<td>".$row['source']."</td>
+			<td>".substr($row['description'], 0, 32)."...</td>
+			<td>".date("D M j G:i:s", $row['timestamp'])."</td>
+			<td>".$row['count']."</td>
+			<td><a href='detail.php?rule_id=".$row['rule_id']."&from=".date("Gi dmy", time()-(86400*30))."&source=".$row['source']."'>Link</a>
 			</tr>";
 	}
 	if($threatcount==0){
 		echo $glb_nodatastring;
 	}	
 	echo "</table>";
+}
+
 ?>

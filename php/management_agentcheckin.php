@@ -10,28 +10,39 @@ $query="SELECT MAX(alert.timestamp) as res_time, SUBSTRING_INDEX(SUBSTRING_INDEX
 	GROUP by res_name
 	ORDER BY res_time;";
 
-
-if(!$result=mysql_query($query, $db_ossec)){
-	echo "SQL Error:".$query;
-}
-
-$mainstring="
-	<table>
-		<tr>
-		<th>Agent</th>
-		<th>Last Alert</th>
-		<th></th>
-		</tr>";
-
-while($row = @mysql_fetch_assoc($result)){
-	$mainstring.= "<tr>
-			<td  style=\"padding:8px\">".$row['res_name']."</td>
-			<td  style=\"padding:8px\">".date("l jS F Y ga", $row['res_time'])."</td>
-			<td  style=\"padding:8px\">".floor((time()-$row['res_time'])/86400)." days</td>
+$mainstring="";
+if($glb_debug==1){
+	$mainstring="<div style='font-size:24px; color:red;font-family: Helvetica,Arial,sans-serif;'>Debug</div>"; 
+	$mainstring.=$query;
+}else{
+	if(!$result=mysql_query($query, $db_ossec)){
+		echo "SQL Error:".$query;
+	}
+	$mainstring="
+		<div style='max-height:500px;overflow:auto;'>
+		<table>
+			<tr>
+			<th>Agent</th>
+			<th>Last Alert</th>
+			<th></th>
 			</tr>";
-}
+	
+	while($row = @mysql_fetch_assoc($result)){
+		$hoursago=(time()-$row['res_time'])/3600;
+	
+		if($hoursago>$glb_management_checkin){
+			$mainstring.= "<tr>
+					<td  style=\"padding:8px\"><a href='./detail.php?source=".$row['res_name']."&from=0000 ".date("dmy", ($row['res_time'])-(7*24*3600))."'>".$row['res_name']."</a></td>
+					<td  style=\"padding:8px\">".date("l jS F Y ga", $row['res_time'])."</td>
+					<td  style=\"padding:8px\">".floor((time()-$row['res_time'])/86400)." days</td>
+					</tr>";
+		}
+	}
 
-$mainstring.="</table>";
+	$mainstring.="</table>
+			</div>";
+
+}
 echo $mainstring;
 
 ?>

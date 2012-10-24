@@ -8,10 +8,11 @@
 ## Note - I know that a substring of a timestamp isn't that clean, but this is built for high peformance on a huge table
 
 $mainstring="";
+
 # var $where is set in the file that calls me
 
 
-## Work out how granular the graph times should be.  All graphs could be hour granular,but for a 6 month, this is stupid.
+## Work out how granular the graph times should be.  All graphs could be hour granular,but for a 6 month, this is stupidly more CPU intensive
 $timediff=$sqlto-$sqlfrom;
 if($timediff<=0){
 	# Oops.
@@ -41,12 +42,13 @@ if(isset($_GET['breakdown']) && $_GET['breakdown']=='level'){
 
 	$keyprepend="Level ";
 	$querychart="SELECT concat(substring(alert.timestamp, 1, $substrsize), '$zeros') as res_time, count(alert.id) as res_cnt, signature.level as res_value
-		FROM alert, location, signature, data
+		FROM alert, location, signature, data ".$wherecategory_tables."
 		WHERE 1=1
 		AND alert.location_id=location.id
 		AND alert.rule_id=signature.rule_id
 		AND alert.id=data.id
 		".$where."
+		".$wherecategory_and."
 		GROUP BY substring(alert.timestamp, 1, $substrsize), signature.level
 		ORDER BY substring(alert.timestamp, 1, $substrsize), signature.level";
 
@@ -55,23 +57,25 @@ if(isset($_GET['breakdown']) && $_GET['breakdown']=='level'){
 
 	$keyprepend="Rule ";
 	$querychart="SELECT concat(substring(alert.timestamp, 1, $substrsize), '$zeros') as res_time, count(alert.id) as res_cnt, alert.rule_id as res_value
-		FROM alert, location, signature, data
+		FROM alert, location, signature, data ".$wherecategory_tables."
 		WHERE 1=1
 		AND alert.location_id=location.id
 		AND alert.rule_id=signature.rule_id
 		AND alert.id=data.id
 		".$where."
+		".$wherecategory_and."
 		GROUP BY substring(alert.timestamp, 1, $substrsize), alert.rule_id
 		ORDER BY substring(alert.timestamp, 1, $substrsize), alert.rule_id";
 }else{
 	# Default - i.e. if not chosen, or if set to 'source'
 	$querychart="SELECT concat(substring(alert.timestamp, 1, $substrsize), '$zeros') as res_time, count(alert.id) as res_cnt, SUBSTRING_INDEX(location.name, ' ', 1) as res_value
-		FROM alert, location, signature, data
+		FROM alert, location, signature, data ".$wherecategory_tables."
 		WHERE 1=1
 		AND alert.location_id=location.id
 		AND alert.rule_id=signature.rule_id
 		AND alert.id=data.id
 		".$where."
+		".$wherecategory_and."
 		GROUP BY substring(alert.timestamp, 1, $substrsize), SUBSTRING_INDEX(location.name, ' ', 1)
 		ORDER BY substring(alert.timestamp, 1, $substrsize), SUBSTRING_INDEX(location.name, ' ', 1)";
 
@@ -145,6 +149,12 @@ if($anydata==1){
 		";
 }
 
+# If no end date, presume now, make graph end at today instead of auto scaling, so add a value for today (-1 due to the javascript way of counting months
+if(strlen($inputto)==0){
+	$mainstring.="{date: new Date(".date("Y, n, j, G, i", strtotime('-1 month '))."), 'now': 1},  ";
+}else{
+	$mainstring.="{date: new Date(".date("Y, n, j, G, i", strtotime('-1 month ', $lastgraphplot))."), 'now': 1},  ";	
+}
 
 # tidy up the last concatanator comma, append a nice closing bracket, and dump what we have collected
 $mainstring=substr($mainstring, 0, -3);
@@ -161,6 +171,7 @@ $arraylocationsunique = array_unique($arraylocations);
 asort($arraylocationsunique);
 
 
+$graphlines="";
 foreach ($arraylocationsunique as $i => $location){
 $graphlines.='
 		// GRAPHS
@@ -170,7 +181,7 @@ $graphlines.='
 		graph'.$i.'.valueField = "'.$location.'";
 		graph'.$i.'.bullet = "round";
 		graph'.$i.'.hideBulletsCount = 30;
-		graph'.$i.'.balloonText = "'.$location.' : level '.$glb_level.'+ : [[value]]";
+		graph'.$i.'.balloonText = "'.$keyprepend.$location.' : [[value]]";
 		graph'.$i.'.connect = false;
 		chart.addGraph(graph'.$i.');
 ';

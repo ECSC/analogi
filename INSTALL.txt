@@ -3,6 +3,9 @@ Copyright (C) 2012 ECSC Ltd.
 
 = Ossec = 
 
+If you intend to overwrite a previous version of AnaLogi you may want to
+backup your config.php and db_ossec.php
+
 Install ossec-hids-server (AnaLogi v1.0 built around OSSEC 2.6)
 
 Follow instructions to log to MySQL database

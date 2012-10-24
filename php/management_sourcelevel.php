@@ -12,48 +12,65 @@ $query="SELECT count(alert.id) as res_cnt, SUBSTRING_INDEX(SUBSTRING_INDEX(locat
 	ORDER BY res_name, res_level";
 
 
-if(!$result=mysql_query($query, $db_ossec)){
-	echo "SQL Error:".$query;
-}
 
-echo "var chartData = [";
-$whilelocation="";
 
 $mainstring="";
-while($row = @mysql_fetch_assoc($result)){
+if($glb_debug==1){
+	$mainstring="var chartData = []";
+	# Oh this is setting a bad code precedent 
+	$clientvsleveldebugstring="<div style='font-size:24px; color:red;font-family: Helvetica,Arial,sans-serif;'>Debug</div>"; 
+	$clientvsleveldebugstring.=$query;
 
-	$sourcelevel[$row['res_name']][$row['res_level']] = $row['res_cnt'];
-}
-
-
-$i=0;
-foreach($sourcelevel as $key=>$val){
-	# $key = (boxname)
-
-	if($i==1){
-		$mainstring.=",";
+}else{
+	if(!$result=mysql_query($query, $db_ossec)){
+		echo "SQL Error:".$query;
 	}
+
+	$whilelocation="";
+	$mainstring="";
+
+	while($row = @mysql_fetch_assoc($result)){
+		$sourcelevel[$row['res_name']][$row['res_level']] = $row['res_cnt'];
+	}
+
+	$mainstring="var chartData = [";
+
+	$i=0;
+	$graphcount=0;
+	foreach($sourcelevel as $key=>$val){
 	
-	$i=1;
-
-	$mainstring.="
-		{source:\"".preg_replace($glb_hostnamereplace,"",$key)."\",";
-
-	foreach($val as $k=>$v){
-		# $k = level
-		# $v = count
-
-		$mainstring.=" level".$k.":".$v.",";	
-
+		$graphcount++;	
+	
+		# $key = (boxname)
+	
+		if($i==1){
+			$mainstring.=",";
+		}
+		
+		$i=1;
+	
+		$mainstring.="
+			{source:\"".preg_replace($glb_hostnamereplace,"",$key)."\",";
+	
+		foreach($val as $k=>$v){
+			# $k = level
+			# $v = count
+	
+			$mainstring.=" level".$k.":".$v.",";	
+	
+		}
+		$mainstring=eregi_replace(',$', '', $mainstring); 
+		$mainstring.="}";
 	}
 	$mainstring=eregi_replace(',$', '', $mainstring); 
-	$mainstring.="}";
+	$mainstring.="
+		];";
 }
-$mainstring=eregi_replace(',$', '', $mainstring); 
-$mainstring.="
-	];";
 
 echo $mainstring;
+
+# As I cannot see a way for amcharts to be in a dynamic height graph.... lets use PHP to adjust it on page load...
+$graphheight="  document.getElementById('chartdiv').style.height='".($graphcount*25)."px';";
 
 #################################
 
@@ -71,6 +88,7 @@ for($i; $i<16;$i++){
 		graph".$i.".type = \"column\";
 		graph".$i.".lineAlpha = 0;
 		graph".$i.".fillAlphas = 1;
+		graph".$i.".lineColor = \"".$levelcolours["level".$i]."\";
 		chart.addGraph(graph".$i.");
 	";
 }

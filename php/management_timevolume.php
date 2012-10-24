@@ -11,36 +11,44 @@ $query="select concat(substring(alert.timestamp, 1, 5), \"00000\") as res_time, 
 		order by substring(alert.timestamp, 1, 5)";
 
 
-if(!$result=mysql_query($query, $db_ossec)){
-        echo "SQL Error:".$query;
-}
+
+if($glb_debug==1){
+	# Oh this is setting a bad code precedent 
+	$timevolumedebugstring="<div style='font-size:24px; color:red;font-family: Helvetica,Arial,sans-serif;'>Debug</div>"; 
+	$timevolumedebugstring.=$query;
 
 
-$mainstring="var chartData_timemanagement = [
-	";
+}else{
+	if(!$result=mysql_query($query, $db_ossec)){
+	        echo "SQL Error:".$query;
+	}
 
-$i=0;
-$alerttotal=0;
-$sizetotal=0;
-while($row = @mysql_fetch_assoc($result)){
-
-        if($i>0){
-                $mainstring.=",";
-        }
-        $i++;
-
-	$tmpdate=$row['res_time'];
+	$mainstring="var chartData_timemanagement = [
+		";
 	
-	$sizetotal+=$row['res_cnt'];
-
-	$mainstring.="
-		{date: new Date(".date("Y", $tmpdate).", ".(date("m", $tmpdate)-1).", ".date("j", $tmpdate)."), count:".$row['res_cnt'].", total:".$sizetotal."}";
-
-	$alerttotal=$alerttotal+$row['res_cnt'];
-
+	$i=0;
+	$alerttotal=0;
+	$sizetotal=0;
+	while($row = @mysql_fetch_assoc($result)){
+	
+	        if($i>0){
+	                $mainstring.=",";
+	        }
+	        $i++;
+	
+		$tmpdate=$row['res_time'];
+		
+		$sizetotal+=$row['res_cnt'];
+	
+		$mainstring.="
+			{date: new Date(".date("Y", $tmpdate).", ".(date("m", $tmpdate)-1).", ".date("j", $tmpdate)."), count:".$row['res_cnt'].", total:".$sizetotal."}";
+	
+		$alerttotal=$alerttotal+$row['res_cnt'];
+	
+	}
+	$mainstring.="];
+	";
 }
-$mainstring.="];
-";
 
 echo $mainstring;
 
