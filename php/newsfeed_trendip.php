@@ -112,7 +112,7 @@ if($glb_debug==1){
 	
 			$categorybits=preg_split('/\|/', $k);
 	
-			echo "<a href='/detail.php?from=".$prevdate."&category=".$categorybits[0]."&ipmatch=".$key."'>".$categorybits[1]."</a> (".number_format($v)."), ";
+			echo "<a href='detail.php?from=".$prevdate."&category=".$categorybits[0]."&ipmatch=".$key."'>".$categorybits[1]."</a> (".number_format($v)."), ";
 	
 		}
 	
