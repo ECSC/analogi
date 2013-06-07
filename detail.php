@@ -608,7 +608,7 @@ include "page_refresh.php";
 	if($rowcount==0){
 		echo "<tr><td><span style='color:red'>No data found, is your database populated?</span>.</td><td></td><td></td><td></td><td></td><td></td></tr>";
 	}elseif($rowcount==$glb_detailtablelimit){
-		echo "<tr><td colspan='6'><span style='color:red'>Search limited</span> to latest <span class='tw'>".number_format($rowcount)."</span> (of ".number_format($resultablerows).") results as per your global config. Please refine your search on increase the limit.</td></tr>";
+		echo "<tr><td colspan='6'><span style='color:red'>Search limited</span> to latest <span class='tw'>".number_format($rowcount)."</span> (of ".number_format($resultablerows).") results as per your global config. Please refine your search or increase the limit.</td></tr>";
 	}else{
 		echo "<tr><td colspan='6'>".number_format($rowcount)." records shown.</td></tr>";
 	}
