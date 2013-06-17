@@ -158,7 +158,7 @@ require './top.php';
 
 <div style="width:66%" class='fleft'>	
 	<div class='top10header'>Groups Activity Over Time (<span class='tw'><?php echo $glb_mass_days ?></span> days)</div>
-	<span style='font-size:9px;'>* For interesting curves I recommend go back to index.php and search for that group specificily </span>
+	<span style='font-size:9px;'>* For interesting curves, I recommend going back to index.php and specifically searching for that group </span>
 	<?php echo $grouptimedebugstring; ?>
 	<div id="chartDiv" class="fleft" style="height:800px; width:100%"></div>
 </div>
