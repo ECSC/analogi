@@ -13,12 +13,14 @@ if(!(isset($_GET['ip']) && $_GET['ip']) || !filter_var($_GET['ip'], FILTER_VALID
 
 
 
-# Get GeoIP stuff into JSON format
-$url="http://freegeoip.net/json/".$ip;
+# Get GeoIP stuff into XML format
+$url="http://ip-api.com/xml/".$ip;
 $content=get_content($url);
-$jsoned = json_decode($content);
-$jsonlat=$jsoned->{'latitude'};
-$jsonlng=$jsoned->{'longitude'};
+$xml = simplexml_load_string($content);
+$jsonlat = $xml->lat;
+$jsonlng = $xml->lon;
+$jsoncountry = $xml->country;
+$jsoncity = $xml->city;
 if($jsonlat==""){
 	$jsonlat="0";
 }
@@ -26,16 +28,16 @@ if($jsonlng==""){
 	$jsonlng="0";
 }
 
-#var_dump($jsoned);
-
-# Get AS and CIDR
+# Get AS and CIDR stuff into XML format
 $url="http://www.dshield.org/api/ip/".$ip;
 $content=get_content($url);
-$xml = simplexml_load_string($content); 
+$xml = simplexml_load_string($content);
 $ip_isp = $xml->asname;
 $ip_range = $xml->network;
 $ip_attacks = $xml->attacks;
-
+if($ip_attacks==""){
+        $ip_attacks="0";
+}
 
 #First Instance
 $query="SELECT alert.timestamp as first
@@ -46,7 +48,6 @@ $query="SELECT alert.timestamp as first
 $result=mysql_query($query, $db_ossec);
 $row = @mysql_fetch_assoc($result);
 $firstinstance = $row['first'];
-	
 
 
 # Seen at
@@ -55,9 +56,9 @@ $query="SELECT distinct(substring_index(substring_index(location.name, ' ', 1), 
 	LEFT JOIN location ON alert.location_id = location.id
 	WHERE alert.id IN (select data.id from data where full_log like '%".$ip."%');";
 if($glb_debug==1){
-	$seenat="<div style='font-size:24px; color:red;font-family: Helvetica,Arial,sans-serif;'>Debug</div>"; 
+	$seenat="<div style='font-size:24px; color:red;font-family: Helvetica,Arial,sans-serif;'>Debug</div>";
 	$seenat.=$query;
-	
+
 }else{
 	$result=mysql_query($query, $db_ossec);
 	$seenat="";
@@ -85,7 +86,7 @@ include "page_refresh.php";
 <link href="./style.css" rel="stylesheet" type="text/css" />
 <script src="./amcharts/amcharts.js" type="text/javascript"></script>
 
-    <script src="https://maps.googleapis.com/maps/api/js?sensor=false"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA6i8T2yLdBFFsb5Xc9jA_0Vjr2qQmTd1w&callback=initMap"></script>
     <script>
       var map;
       function initialize() {
@@ -135,7 +136,7 @@ include "page_refresh.php";
 	<div class='wide fleft'>Network Range</div>
 	<div class='fleft'><?php echo $ip_range ?></div>
 	<div class='clr gap'></div>
-	
+
 	<div class='wide fleft'><a href='http://www.dshield.org/ipinfo.html?ip=<?php echo $ip; ?>'>dshield</a> have counted</div>
 	<div class='fleft'><?php echo $ip_attacks ?> attacks from this IP</div>
 	<div class='clr gap'></div>
@@ -144,8 +145,8 @@ include "page_refresh.php";
 	<div class='fleft'><?php $x = (strlen($firstinstance)>0) ? date($glb_detailtimestamp, $firstinstance): "-"; echo $x;?></div>
 	<div class='clr gap'></div>
 
-	<div class='wide fleft'>Country</div>
-	<div class='fleft'><?php echo $jsoned->{'country_name'} ?></div>
+	<div class='wide fleft'>Country and City</div>
+	<div class='fleft'><?php echo $jsoncountry.", ".$jsoncity ?></div>
 	<div class='clr gap'></div>
 
 	<div class='wide fleft'>Detail Breakdown</div>
@@ -182,11 +183,6 @@ include "page_refresh.php";
 <div><a href="http://www.robtex.com/ip/<?php echo $ip ?>.html">Robtex</a></div>
 <div><a href="http://www.mxtoolbox.com/SuperTool.aspx?action=blacklist%3a<?php echo $ip ?>">MxToolBox</a></div>
 <div></div>
-
-<div class="clr"></div>
-<div style='padding:40px ;width:95%; text-align:center;'>
-	<a class='tiny' href='http://www.ecsc.co.uk/analogi.html'>ECSC | Vendor Independent Information Security Specialists</a>
-</div>
 
 <div class='clr'></div>
 
