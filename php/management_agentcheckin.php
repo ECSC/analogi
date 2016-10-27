@@ -15,7 +15,7 @@ if($glb_debug==1){
 	$mainstring="<div style='font-size:24px; color:red;font-family: Helvetica,Arial,sans-serif;'>Debug</div>"; 
 	$mainstring.=$query;
 }else{
-	if(!$result=mysql_query($query, $db_ossec)){
+	if(!$result=$mysqli->query($query)){
 		echo "SQL Error:".$query;
 	}
 	$mainstring="
@@ -27,7 +27,7 @@ if($glb_debug==1){
 			<th></th>
 			</tr>";
 	
-	while($row = @mysql_fetch_assoc($result)){
+	while($row = $result->fetch_assoc()){
 		$hoursago=(time()-$row['res_time'])/3600;
 	
 		if($hoursago>$glb_management_checkin){

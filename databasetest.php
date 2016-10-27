@@ -9,8 +9,8 @@
 
 $query="SELECT count(id) as res_count
 	FROM alert";
-if($result=mysql_query($query, $db_ossec)){
-	$row = @mysql_fetch_assoc($result);
+if($result=$mysqli->query($query)){
+	$row = $result->fetch_assoc();
 	if(!$row['res_count']>0){
 		echo "
 		alert(\"Connected to database ok, but no alerts found. Ensure OSSEC is logging to your database.\");";
@@ -23,8 +23,8 @@ if($result=mysql_query($query, $db_ossec)){
 
 $query="SELECT count(id) as res_count
 	FROM data";
-if($result=mysql_query($query, $db_ossec)){
-	$row = @mysql_fetch_assoc($result);
+if($result=$mysqli->query($query)){
+	$row = $result->fetch_assoc();
 	if(!$row['res_count']>0){
 		echo "
 		alert(\"Connected to database ok, but no data found. Ensure OSSEC is logging to your database.\");";
@@ -37,8 +37,8 @@ if($result=mysql_query($query, $db_ossec)){
 
 $query="SELECT count(id) as res_count
 	FROM location";
-if($result=mysql_query($query, $db_ossec)){
-	$row = @mysql_fetch_assoc($result);
+if($result=$mysqli->query($query)){
+	$row = $result->fetch_assoc();
 	if(!$row['res_count']>0){
 		echo "
 		alert(\"Connected to database ok, but no locations found. Ensure OSSEC is logging to your database.\");";

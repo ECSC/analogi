@@ -50,13 +50,13 @@ if(isset($_GET['action']) && $_GET['action']=='delete' && preg_match("/\/managem
 			LEFT JOIN signature ON alert.rule_id=signature.rule_id
 			LEFT JOIN location ON alert.location_id=location.id
 			WHERE ".$where;
-		$resultdelete=mysql_query($querydelete, $db_ossec);
+		$resultdelete=$mysqli->query($querydelete);
 		if($resultdelete==1){
 			# MySQL version of vaccum... this actually removes the data
 			$query="OPTIMIZE TABLE alert;";
-			mysql_query($query, $db_ossec);
+			$mysqli->query($query);
 			$query="OPTIMIZE TABLE data;";
-			mysql_query($query, $db_ossec);
+			$mysqli->query($query);
 		}
 	
 		if($glb_detailsql==1){
@@ -78,7 +78,7 @@ if(isset($_GET['action']) && $_GET['action']=='removelocation' && isset($_GET['s
 		LEFT JOIN signature ON alert.rule_id=signature.rule_id
 		LEFT JOIN location ON alert.location_id=location.id
 		WHERE location.name like \"".$_GET['source']."%\"";
-	$resultdelete=mysql_query($querydelete, $db_ossec);
+	$resultdelete=$mysqli->query($querydelete);
 	if($glb_detailsql==1){
 		#For niceness show the SQL queries, just incase you want to dig deeper your self
 		echo "<div class='fleft top10header'>SQL (".$resultdelete.")</div>
@@ -87,14 +87,14 @@ if(isset($_GET['action']) && $_GET['action']=='removelocation' && isset($_GET['s
 	}
 	# MySQL version of vaccum... this actually removes the data
 	$query="OPTIMIZE TABLE alert;";
-	mysql_query($query, $db_ossec);
+	$mysqli->query($query);
 	$query="OPTIMIZE TABLE data;";
-	mysql_query($query, $db_ossec);
+	$mysqli->query($query);
 
 	# Delete location
 	$querydelete="DELETE FROM location
 		WHERE location.name like \"".$_GET['source']."%\"";	
-	$resultdelete=mysql_query($querydelete, $db_ossec);
+	$resultdelete=$mysqli->query($querydelete);
 	if($glb_detailsql==1){
 		#For niceness show the SQL queries, just incase you want to dig deeper your self
 		echo "<div class='fleft top10header'>SQL (".$resultdelete.")</div>
@@ -113,33 +113,33 @@ $query="SELECT alert.timestamp as age
 	FROM alert
 	ORDER BY timestamp
 	LIMIT 1";
-$result=mysql_query($query, $db_ossec);
-$row = @mysql_fetch_assoc($result);
+$result=$mysqli->query($query);
+$row = $result->fetch_assoc();
 $oldestalert=$row['age'];
 
 
 
 # Get all clients for dropdown
 $query="SELECT distinct(substring_index(substring_index(name, ' ', 1), '->', 1)) as dname FROM location ORDER BY dname";
-$result=mysql_query($query, $db_ossec);
+$result=$mysqli->query($query);
 $filtersource="";
-while($row = @mysql_fetch_assoc($result)){
+while($row = $result->fetch_assoc()){
 	$filtersource.="<option value='".$row['dname']."'>".$row['dname']."</option>";
 }
 
 # Get paths for dropdown
 $query="SELECT distinct(substring_index(name,'->',-1)) as dname FROM location ORDER BY dname;";
-$result=mysql_query($query, $db_ossec);
+$result=$mysqli->query($query);
 $filterpath="";
-while($row = @mysql_fetch_assoc($result)){
+while($row = $result->fetch_assoc()){
 	$filterpath.="<option value='".$row['dname']."'>".$row['dname']."</option>";
 }
 
 # Get all levels for dropdowns
 $query="SELECT distinct(level) FROM signature ORDER BY level";
-$result=mysql_query($query, $db_ossec);
+$result=$mysqli->query($query);
 $filterlevel="";
-while($row = @mysql_fetch_assoc($result)){
+while($row = $result->fetch_assoc()){
 	$filterlevel.="<option value='".$row['level']."'>".$row['level']."</option>";
 }
 

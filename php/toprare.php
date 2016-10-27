@@ -28,13 +28,13 @@ $query="select distinct(alert.rule_id)
 	".$wherecategory."";
 
 
-if(!$result=mysql_query($query, $db_ossec)){
+if(!$result=$mysqli->query($query)){
 	echo "SQL Error:".$query;
 }	
 
 $lastrare =  array();
 
-while($row = @mysql_fetch_assoc($result)){
+while($row = $result->fetch_assoc()){
 
 	$ruleid=$row['rule_id'];
 
@@ -43,8 +43,8 @@ while($row = @mysql_fetch_assoc($result)){
 		where alert.rule_id=".$ruleid."
 		and alert.rule_id=signature.rule_id
 		and alert.timestamp<".(time()-($inputhours*3600));
-	$resultlast=mysql_query($querylast, $db_ossec);
-	$rowlast = @mysql_fetch_assoc($resultlast);
+	$resultlast=$mysqli->query($querylast);
+	$rowlast = $resultlast->fetch_assoc();
 	$lastrare[$ruleid]=$rowlast['time']."||".$rowlast['descr'];
 }
 

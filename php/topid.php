@@ -38,7 +38,7 @@ echo "<div class='top10header'>
 
 $mainstring="";
 
-if(!$result=mysql_query($query, $db_ossec)){
+if(!$result=$mysqli->query($query)){
 	$mainstring= "SQL Error: ".$query;
 
 }elseif($glb_debug==1){
@@ -55,7 +55,7 @@ if(!$result=mysql_query($query, $db_ossec)){
 	# Keep this in the same format that detail.php already uses
 	$from=date("Hi dmy", (time()-($inputhours*3600)));
 	
-	while($row = @mysql_fetch_assoc($result)){
+	while($row = $result->fetch_assoc()){
 		$mainstring.="<div class='fleft top10data' style='width:60px'>".number_format($row['res_cnt'])."</div>
 				<div class='fleft top10data'><a class='top10data tooltip_small' href='./detail.php?rule_id=".$row['res_rule']."&from=".$from."&breakdown=source'>".htmlspecialchars(substr($row['res_desc'], 0, 28))."...<span>".htmlspecialchars($row['res_desc'])."</span></a></div>";
 	

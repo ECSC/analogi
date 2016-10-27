@@ -29,11 +29,11 @@ if($glb_debug==1){
 	
 }else{
 
-	if(!$result=mysql_query($query, $db_ossec)){
+	if(!$result=$mysqli->query($query)){
 		echo "SQL Error:".$query;
 	}
 
-	while($row = @mysql_fetch_assoc($result)){
+	while($row = $result->fetch_assoc()){
 		$sourcelevel[$row['res_time']][$row['res_name']] = $row['res_cnt'];
 	}
 	
@@ -73,10 +73,10 @@ if($glb_debug==1){
 			$mainstring.=" ".$k.":".$v.",";	
 	
 		}
-		$mainstring=eregi_replace(',$', '', $mainstring); 
+		$mainstring=preg_replace('/,$/', '', $mainstring); 
 		$mainstring.="}";
 	}
-	$mainstring=eregi_replace(',$', '', $mainstring); 
+	$mainstring=preg_replace('/,$/' , '', $mainstring); 
 	$mainstring.="
 		];";
 	

@@ -43,8 +43,8 @@ $query="SELECT alert.timestamp as first
 	WHERE alert.src_ip='".ip2long($ip)."'
 	ORDER BY alert.timestamp
 	LIMIT 1";
-$result=mysql_query($query, $db_ossec);
-$row = @mysql_fetch_assoc($result);
+$result=$mysqli->query($query);
+$row = $result->fetch_assoc();
 $firstinstance = $row['first'];
 	
 
@@ -59,9 +59,9 @@ if($glb_debug==1){
 	$seenat.=$query;
 	
 }else{
-	$result=mysql_query($query, $db_ossec);
+	$result=$mysqli->query($query);
 	$seenat="";
-	while($row = @mysql_fetch_assoc($result)){
+	while($row = $result->fetch_assoc()){
 		$seenat.="<a href='detail.php?datamatch=".$ip."&source=".$row['loc_name']."&level=7'>".$row['loc_name']."</a>, ";
 	}
 }

@@ -14,9 +14,9 @@ if(isset($_GET['level']) && preg_match("/^[0-9]+$/", $_GET['level'])){
 	$inputlevel=$glb_level;
 }
 $query="SELECT distinct(level) FROM signature ORDER BY level";
-$result=mysql_query($query, $db_ossec);
+$result=$mysqli->query($query);
 $filterlevel="";
-while($row = @mysql_fetch_assoc($result)){
+while($row = $result->fetch_assoc()){
 	$selected="";
 	if($row['level']==$inputlevel){
 		$selected=" SELECTED";
@@ -43,9 +43,9 @@ if(isset($_GET['category']) && preg_match("/^[0-9]+$/", $_GET['category'])){
 $query="SELECT *
 	FROM category
 	ORDER BY cat_name";
-$result=mysql_query($query, $db_ossec);
+$result=$mysqli->query($query);
 $filtercategory="";
-while($row = @mysql_fetch_assoc($result)){
+while($row = $result->fetch_assoc()){
 	$selected="";
         if($row['cat_id']==$inputcategory){
                 $selected=" SELECTED";

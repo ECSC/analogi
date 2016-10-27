@@ -10,7 +10,7 @@ $query="SELECT 	count(alert.rule_id) as count,
 		alert.rule_id as rule_id,
 		signature.level,
 		signature.description,
-		data.full_log as data
+		ANY_VALUE(data.full_log) as data
 	FROM alert, location, signature, data
 	WHERE alert.timestamp>".(time()-($glb_threatdays*3600*24))."
 	AND signature.level>".$glb_threatlevel."
@@ -28,7 +28,7 @@ if($glb_debug==1){
 
 }else{
 
-	$result=mysql_query($query, $db_ossec);
+	$result=$mysqli->query($query);
 	
 	$threatcount=0;
 
@@ -47,7 +47,7 @@ if($glb_debug==1){
 	";
 
 
-	while($row = @mysql_fetch_assoc($result)){
+	while($row = $result->fetch_assoc()){
 		$threatcount=1;
 		
 		echo "<tr>

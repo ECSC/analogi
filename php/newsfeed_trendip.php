@@ -44,13 +44,14 @@ $query="select res_ip from
 	  order by res_count desc
 	  limit ".$glb_trendip_top."
 	 ) as snuff";
+
 if($glb_debug==1){
 	echo "<div style='font-size:24px; color:red;font-family: Helvetica,Arial,sans-serif;'>Debug</div>"; 
-	echo $query;
+	echo "erster query: ".$query;
 }else{
 	$whereinorderby="";
-	$result=mysql_query($query, $db_ossec);
-	while($row = @mysql_fetch_assoc($result)){
+	$result=$mysqli->query($query);
+	while($row = $result->fetch_assoc()){
 		$whereinorderby.="'".$row['res_ip']."',";
 	}
 	$whereinorderby=preg_replace('/,$/','',$whereinorderby);
@@ -87,9 +88,10 @@ if($glb_debug==1){
 	echo "<table>";
 	echo "<tr><th>IP</th><th>Groups (count)</th></tr>";
 	
-	$result=mysql_query($query, $db_ossec);
-	$tmpip=array();
-	while($row = @mysql_fetch_assoc($result)){
+	$result=$mysqli->query($query);
+	
+        $tmpip=array();
+	while($row = $result->fetch_assoc()){
 	
 		$tmpip[$row['res_ip']][$row['res_id']."|".$row['res_name']]=$row['res_cnt'];
 	
