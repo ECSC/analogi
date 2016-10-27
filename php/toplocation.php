@@ -40,7 +40,7 @@ echo "<div class='top10header' >
 
 $mainstring="";
 $detailshours="";
-if(!$result=mysql_query($query, $db_ossec)){
+if(!$result=$mysqli->query($query)){
 	$mainstring.= "SQL Error: ".$query;
 
 }elseif($glb_debug==1){
@@ -61,7 +61,7 @@ if(!$result=mysql_query($query, $db_ossec)){
 	}
 
 
-	while($row = @mysql_fetch_assoc($result)){
+	while($row = $result->fetch_assoc()){
 		$mainstring.="<div class='fleft top10data' style='width:60px'>".number_format($row['res_cnt'])."</div>
 				<div class='fleft top10data'><a class='top10data' href='./detail.php?source=".$row['res_name']."&level=".$inputlevel."&from=".$from.$detailshours."&breakdown=rule_id'>".htmlspecialchars(preg_replace($glb_hostnamereplace, "", $row['res_name']))."</a></div>
 				<div class='clr'></div>";

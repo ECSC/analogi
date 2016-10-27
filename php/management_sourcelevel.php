@@ -4,7 +4,7 @@
  * This program is free software; Distributed under the terms of the GNU GPL v3.
  */
 
-$query="SELECT count(alert.id) as res_cnt, SUBSTRING_INDEX(SUBSTRING_INDEX(location.name, ' ', 1), '->', 1) as res_name, location.id as res_id , signature.level as res_level       
+$query="SELECT count(alert.id) as res_cnt, SUBSTRING_INDEX(SUBSTRING_INDEX(location.name, ' ', 1), '->', 1) as res_name, ANY_VALUE(location.id) as res_id , signature.level as res_level       
 	FROM alert, location, signature  
 	WHERE alert.location_id = location.id         
 	AND alert.rule_id = signature.rule_id         
@@ -22,14 +22,14 @@ if($glb_debug==1){
 	$clientvsleveldebugstring.=$query;
 
 }else{
-	if(!$result=mysql_query($query, $db_ossec)){
+	if(!$result=$mysqli->query($query)){
 		echo "SQL Error:".$query;
 	}
 
 	$whilelocation="";
 	$mainstring="";
 
-	while($row = @mysql_fetch_assoc($result)){
+	while($row = $result->fetch_assoc()){
 		$sourcelevel[$row['res_name']][$row['res_level']] = $row['res_cnt'];
 	}
 
@@ -59,10 +59,10 @@ if($glb_debug==1){
 			$mainstring.=" level".$k.":".$v.",";	
 	
 		}
-		$mainstring=eregi_replace(',$', '', $mainstring); 
+		$mainstring=preg_replace('/,$/', '', $mainstring); 
 		$mainstring.="}";
 	}
-	$mainstring=eregi_replace(',$', '', $mainstring); 
+	$mainstring=preg_replace('/,$/', '', $mainstring); 
 	$mainstring.="
 		];";
 }

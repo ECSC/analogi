@@ -9,8 +9,8 @@ $query = "SELECT table_schema as 'Database', sum( data_length + index_length ) /
 if($glb_debug==1){
 	$databaseinMB=$query;
 }else{
-	$result=mysql_query($query, $db_ossec);
-	$row = @mysql_fetch_assoc($result);
+	$result=$mysqli->query($query);
+	$row = $result->fetch_assoc();
 	$databaseinMB=number_format(floor($row['Size']))." MB";
 }
 
@@ -18,8 +18,8 @@ $query="SELECT count(id) as rows from alert";
 if($glb_debug==1){
 	$databaseinrows=$query;
 }else{
-	$result=mysql_query($query, $db_ossec);
-	$row = @mysql_fetch_assoc($result);
+	$result=$mysqli->query($query);
+	$row = $result->fetch_assoc();
 	$databaseinrows=number_format($row['rows']);
 }
 ?>

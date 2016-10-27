@@ -19,7 +19,7 @@ if($glb_debug==1){
 	$mainstring.=$query;
 
 }else{
-	if(!$result=mysql_query($query, $db_ossec)){
+	if(!$result=$mysqli->query($query)){
 		echo "SQL Error:".$query;
 	}
 	$mainstring="
@@ -32,7 +32,7 @@ if($glb_debug==1){
 			<th>View</th>
 			</tr>";
 	
-	while($row = @mysql_fetch_assoc($result)){
+	while($row = $result->fetch_assoc()){
 		$mainstring.="
 		<tr>
 		<td style=\"padding:8px\">".number_format($row['res_cnt'])."</td>
