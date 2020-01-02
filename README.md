@@ -1,3 +1,7 @@
+☠️☠️☠️
+***THIS PROJECT IS NO LONGER MAINTAINED***
+☠️☠️☠️
+
 AnaLogi
 =======
 
